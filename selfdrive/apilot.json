@@ -912,6 +912,19 @@
       "unit": 5
     },
     {
+      "group": "차량간격",
+      "name": "DynamicTFollow",
+      "title": "동적 차간거리 설정(0)",
+      "descr": "선행차와 거리에따른 동적 설정",
+      "egroup": "FDIST",
+      "etitle": "Dynamic TFollow",
+      "edescr": "",
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": 5
+    },
+    {
       "group": "감속제어",
       "name": "AutoCurveSpeedLowerLimit",
       "title": "커브속도 최저속도(30)",

@@ -366,6 +366,7 @@ class LongitudinalMpc:
     else:
       v_cruise, stop_x, mode = carrot.v_cruise, carrot.stop_dist, carrot.mode
       comfort_brake, stop_distance = carrot.comfort_brake, carrot.stop_distance
+      t_follow = carrot.dynamic_t_follow(t_follow, radarstate.leadOne, desired_follow_distance(v_ego, radarstate.leadOne.vLead, t_follow))
 
     self.params[:,0] = ACCEL_MIN if not reset_state else a_ego
     # negative accel constraint causes problems because negative speed is not allowed
