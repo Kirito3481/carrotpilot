@@ -509,6 +509,7 @@ private:
     int    softHoldActive = 0;
     bool    longActive = false;
 
+    float   t_follow = 0.0;
     QPointF tf_vertex_left;
     QPointF tf_vertex_right;
 
@@ -577,7 +578,7 @@ protected:
         path_width = (int)path_fwidth;
 
 
-        float t_follow = lp.getTFollow();
+        t_follow = lp.getTFollow();
         float tf_distance = t_follow * v_ego + 6;
         int tf_idx = get_path_length_idx(line, tf_distance);
         float tf_y = line.getY()[tf_idx];
@@ -666,6 +667,9 @@ public:
         tf_vertext.push_back(tf_vertex_left);
         tf_vertext.push_back(tf_vertex_right);
         ui_draw_line(s, tf_vertext, nullptr, nullptr, 3.0, COLOR_WHITE);
+        sprintf(str, "%.2f", t_follow);
+        ui_draw_text(s, tf_vertex_right.x(), tf_vertex_right.y(), str, 25, COLOR_WHITE, BOLD);
+
 
         float px[7], py[7];
         NVGcolor rcolor = isLeadSCC() ? COLOR_RED : COLOR_ORANGE;
