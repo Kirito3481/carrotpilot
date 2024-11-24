@@ -96,6 +96,8 @@ class CarrotPlanner:
     self.tFollowGap3 = 1.45
     self.tFollowGap4 = 1.6
 
+    self.dynamicTFollow = 0.0
+
     self.cruiseMaxVals1 = 1.6
     self.cruiseMaxVals2 = 1.2
     self.cruiseMaxVals3 = 1.0
@@ -129,6 +131,7 @@ class CarrotPlanner:
       self.tFollowGap2 = self.params.get_float("TFollowGap2") / 100.
       self.tFollowGap3 = self.params.get_float("TFollowGap3") / 100.
       self.tFollowGap4 = self.params.get_float("TFollowGap4") / 100.
+      self.dynamicTFollow = self.params.get_float("DynamicTFollow") / 100.
     elif self.params_count == 30:
       self.cruiseMaxVals1 = self.params.get_float("CruiseMaxVals1") / 100.
       self.cruiseMaxVals2 = self.params.get_float("CruiseMaxVals2") / 100.
@@ -160,6 +163,15 @@ class CarrotPlanner:
       return self.tFollowGap1
     else:
       raise NotImplementedError("Longitudinal personality not supported")
+
+  def dynamic_t_follow(self, t_follow, lead, desired_follow_distance):
+
+    if lead.status:
+      if self.dynamicTFollow > 0.0:
+        gap_dist_adjust = clip((desired_follow_distance - lead.dRel) * self.dynamicTFollow, - 0.1, 1.0)
+        t_follow += gap_dist_adjust
+
+    return t_follow
 
   def update_stop_dist(self, stop_x):
     stop_x = self.xStopFilter.process(stop_x, median = True)
