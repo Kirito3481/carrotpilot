@@ -234,7 +234,7 @@ class LongitudinalPlanner:
     longitudinalPlan.xState = self.carrot.xState.value
     longitudinalPlan.trafficState = self.carrot.trafficState.value
     longitudinalPlan.xTarget = self.v_cruise_kph
-    longitudinalPlan.tFollow = self.mpc.t_follow
+    longitudinalPlan.tFollow = float(self.mpc.t_follow)
     longitudinalPlan.events = self.carrot.events.to_msg()
 
     pm.send('longitudinalPlan', plan_send)
