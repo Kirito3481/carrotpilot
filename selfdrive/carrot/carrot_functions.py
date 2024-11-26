@@ -9,6 +9,7 @@ import json
 from openpilot.selfdrive.selfdrived.events import Events
 from cereal import car, log
 EventName = log.OnroadEvent.EventName
+LaneChangeState = log.LaneChangeState
 
 class XState(Enum):
   lead = 0
@@ -97,6 +98,7 @@ class CarrotPlanner:
     self.tFollowGap4 = 1.6
 
     self.dynamicTFollow = 0.0
+    self.dynamicTFollowLC = 0.0
 
     self.cruiseMaxVals1 = 1.6
     self.cruiseMaxVals2 = 1.2
@@ -111,6 +113,8 @@ class CarrotPlanner:
 
     self.eco_over_speed = 4
     self.eco_target_speed = 0
+
+    self.desireState = 0.0    
 
 
   def _params_update(self):
@@ -132,6 +136,7 @@ class CarrotPlanner:
       self.tFollowGap3 = self.params.get_float("TFollowGap3") / 100.
       self.tFollowGap4 = self.params.get_float("TFollowGap4") / 100.
       self.dynamicTFollow = self.params.get_float("DynamicTFollow") / 100.
+      self.dynamicTFollowLC = self.params.get_float("DynamicTFollowLC") / 100.
     elif self.params_count == 30:
       self.cruiseMaxVals1 = self.params.get_float("CruiseMaxVals1") / 100.
       self.cruiseMaxVals2 = self.params.get_float("CruiseMaxVals2") / 100.
@@ -164,9 +169,19 @@ class CarrotPlanner:
     else:
       raise NotImplementedError("Longitudinal personality not supported")
 
+  def _update_model_desire(self, sm):
+    meta = sm['modelV2'].meta
+    carState = sm['carState']
+    if meta.laneChangeState == LaneChangeState.laneChangeStarting: # laneChangig
+      self.desireState = meta.desireState[3] if carState.leftBlinker else meta.desireState[4]
+    else:
+      self.desireState = 0.0
+  
   def dynamic_t_follow(self, t_follow, lead, desired_follow_distance):
 
-    if lead.status:
+    if self.desireState > 0.9:
+      t_follow *= self.dynamicTFollowLC
+    elif lead.status:      
       if self.dynamicTFollow > 0.0:
         gap_dist_adjust = clip((desired_follow_distance - lead.dRel) * self.dynamicTFollow, - 0.1, 1.0)
         t_follow += gap_dist_adjust
@@ -273,6 +288,8 @@ class CarrotPlanner:
 
   def update(self, sm, v_cruise_kph):
     self._params_update()
+
+    self._update_model_desire(sm)
 
     self.events = Events()
     carstate = sm['carState']
