@@ -281,6 +281,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     { "AdjustLaneOffset", PERSISTENT },
     { "AdjustCurveOffset", PERSISTENT },
     { "AdjustLaneTime", PERSISTENT },
+    { "LaneChangeNeedTorque", PERSISTENT},
     { "MaxAngleFrames", PERSISTENT },
     { "SoftHoldMode", PERSISTENT },
     { "LateralTorqueCustom", PERSISTENT },

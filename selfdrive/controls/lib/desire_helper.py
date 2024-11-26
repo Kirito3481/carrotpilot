@@ -2,6 +2,8 @@ from cereal import log
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.realtime import DT_MDL
 
+from openpilot.common.params import Params
+
 LaneChangeState = log.LaneChangeState
 LaneChangeDirection = log.LaneChangeDirection
 TurnDirection = log.Desire
@@ -79,6 +81,7 @@ class ExistCounter:
 
 class DesireHelper:
   def __init__(self):
+    self.params = Params()
     self.lane_change_state = LaneChangeState.off
     self.lane_change_direction = LaneChangeDirection.none
     self.lane_change_timer = 0.0
@@ -109,8 +112,13 @@ class DesireHelper:
 
     self.lane_available_last = False
     self.edge_available_last = False
+
+    self.laneChangeNeedTorque = False
     
   def update(self, carstate, modeldata, lateral_active, lane_change_prob, carrotMan):
+
+    self.laneChangeNeedTorque = self.params.get_bool("LaneChangeNeedTorque")
+
     v_ego = carstate.vEgo
     #one_blinker = carstate.leftBlinker != carstate.rightBlinker
     leftBlinker = carstate.leftBlinker
@@ -203,13 +211,17 @@ class DesireHelper:
         if not one_blinker or below_lane_change_speed:
           self.lane_change_state = LaneChangeState.off
           self.lane_change_direction = LaneChangeDirection.none
-        # 운전자가 깜박이켠경우는 바로 차선변경 시작
-        elif driver_one_blinker and not blindspot_detected and lane_available:
-          self.lane_change_state = LaneChangeState.laneChangeStarting
-        # ATC작동인경우 차선이 나타나거나 차선이 생기면 차선변경 시작
-        # lane_appeared: 차선이 생기는건 안함.. 위험.  
-        elif (torque_applied or auto_lane_change_available) and not blindspot_detected:
-          self.lane_change_state = LaneChangeState.laneChangeStarting
+        elif not blindspot_detected:
+          if self.laneChangeNeedTorque:
+            if torque_applied:
+              self.lane_change_state = LaneChangeState.laneChangeStarting
+          # 운전자가 깜박이켠경우는 바로 차선변경 시작
+          elif driver_one_blinker and lane_available:
+            self.lane_change_state = LaneChangeState.laneChangeStarting
+          # ATC작동인경우 차선이 나타나거나 차선이 생기면 차선변경 시작
+          # lane_appeared: 차선이 생기는건 안함.. 위험.  
+          elif torque_applied or auto_lane_change_available:
+            self.lane_change_state = LaneChangeState.laneChangeStarting
 
       # LaneChangeState.laneChangeStarting
       elif self.lane_change_state == LaneChangeState.laneChangeStarting:
