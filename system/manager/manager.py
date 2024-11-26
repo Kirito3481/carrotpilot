@@ -96,6 +96,7 @@ def get_default_params():
     ("TFollowGap3", "140"),
     ("TFollowGap4", "160"),
     ("DynamicTFollow", "0"),
+    ("DynamicTFollowLC", "100"),
     ("HapticFeedbackWhenSpeedCamera", "0"),       
     ("UseLaneLineSpeed", "0"),    
     ("UseLaneLineCurveSpeed", "0"),    
