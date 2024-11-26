@@ -9,6 +9,8 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QWidget>
+#include <QListWidget>
+#include <QScroller>
 
 #include "selfdrive/ui/ui.h"
 #include "selfdrive/ui/qt/util.h"
@@ -106,6 +108,7 @@ public:
   explicit SelectCar(QWidget* parent = 0);
 
 private:
+  Params params;
 
 signals:
   void backPress();
@@ -128,6 +131,8 @@ private:
     ListWidget* dispToggles;
     ListWidget* startToggles;
     ListWidget* speedToggles;
+
+    Params params;
 
     SelectCar* selectCar = nullptr;
     void togglesCarrot(int widgetIndex);
@@ -156,6 +161,9 @@ private:
     QLabel label;
 
     QString m_params;
+
+    Params params;
+
     int m_min;
     int m_max;
     int m_unit;

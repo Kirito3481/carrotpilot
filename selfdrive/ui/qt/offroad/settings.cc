@@ -459,9 +459,26 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   )");
 }
 
+// Carrot Panel
+static QStringList get_list(const char* path)
+{
+    QStringList stringList;
+    QFile textFile(path);
+    if (textFile.open(QIODevice::ReadOnly))
+    {
+        QTextStream textStream(&textFile);
+        while (true)
+        {
+            QString line = textStream.readLine();
+            if (line.isNull())
+                break;
+            else
+                stringList.append(line);
+        }
+    }
 
-#include <QScroller>
-#include <QListWidget>
+    return stringList;
+}
 
 CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
 
@@ -602,7 +619,7 @@ CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
     pathToggles->addItem(new CValueControl("ShowPathWidth", "DISP:Path Width ratio(100%)", "", "../assets/offroad/icon_shell.png", 10, 200, 10));
 
     startToggles = new ListWidget(this);
-    QString selected = QString::fromStdString(Params().get("CarSelected3"));
+    QString selected = QString::fromStdString(params.get("CarSelected3"));
     QPushButton* selectCarBtn = new QPushButton(selected.length() > 1 ? selected : tr("SELECT YOUR CAR"));
     selectCarBtn->setObjectName("selectCarBtn");
     selectCarBtn->setStyleSheet(R"(
@@ -618,17 +635,16 @@ CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
             background-color: #4a4a4a;  /* 버튼 클릭 시 배경색 */
         }
     )");
-    //selectCarBtn->setFixedSize(350, 100);
-    selectCar = new SelectCar(this);
-    connect(selectCar, &SelectCar::backPress, [=]() { main_layout->setCurrentWidget(homeScreen); });
-    connect(selectCar, &SelectCar::selectedCar, [=]() {
-
-        QString selected = QString::fromStdString(Params().get("CarSelected3"));
-        selectCarBtn->setText(selected.length() ? selected : tr("SELECT YOUR CAR"));
-        main_layout->setCurrentWidget(homeScreen);
+    connect(selectCarBtn, &QPushButton::clicked, [=]() {
+      QStringList cars = {tr("[ Not selected ]")};
+      cars.append(get_list("/data/params/d/SupportedCars"));
+      QString cur = QString::fromStdString(params.get("CarSelected3"));
+      QString selection = MultiOptionDialog::getSelection(tr("SELECT YOUR CAR"), cars, cur, this);
+      if (!selection.isEmpty()) {
+        params.put("CarSelected3", selection.toStdString());
+        selectCarBtn->setText(QString::fromStdString(params.get("CarSelected3")));
+      }
     });
-    connect(selectCarBtn, &QPushButton::clicked, [=]() { main_layout->setCurrentWidget(selectCar); });
-    main_layout->addWidget(selectCar);
 
     startToggles->addItem(selectCarBtn);
     startToggles->addItem(new CValueControl("HyundaiCameraSCC", "HYUNDAI: CAMERA SCC", "Connect the SCC's CAN line to CAM", "../assets/offroad/icon_shell.png", 0, 1, 1));
@@ -748,13 +764,13 @@ void CValueControl::showEvent(QShowEvent* event) {
 }
 
 void CValueControl::refresh() {
-    label.setText(QString::fromStdString(Params().get(m_params.toStdString())));
+    label.setText(QString::fromStdString(params.get(m_params.toStdString())));
 }
 
 void CValueControl::adjustValue(int delta) {
-    int value = QString::fromStdString(Params().get(m_params.toStdString())).toInt();
+    int value = QString::fromStdString(params.get(m_params.toStdString())).toInt();
     value = qBound(m_min, value + delta, m_max);
-    Params().putInt(m_params.toStdString(), value);
+    params.putInt(m_params.toStdString(), value);
     refresh();
 }
 
@@ -767,25 +783,7 @@ void CValueControl::decreaseValue() {
 }
 
 
-static QStringList get_list(const char* path)
-{
-    QStringList stringList;
-    QFile textFile(path);
-    if (textFile.open(QIODevice::ReadOnly))
-    {
-        QTextStream textStream(&textFile);
-        while (true)
-        {
-            QString line = textStream.readLine();
-            if (line.isNull())
-                break;
-            else
-                stringList.append(line);
-        }
-    }
 
-    return stringList;
-}
 SelectCar::SelectCar(QWidget* parent) : QWidget(parent) {
 
     QVBoxLayout* main_layout = new QVBoxLayout(this);
@@ -815,7 +813,7 @@ SelectCar::SelectCar(QWidget* parent) : QWidget(parent) {
     list->addItems(items_toyota);
     list->setCurrentRow(0);
 
-    QString selected = QString::fromStdString(Params().get("CarSelected3"));
+    QString selected = QString::fromStdString(params.get("CarSelected3"));
 
     int index = 0;
     for (QString item : items) {
@@ -830,9 +828,9 @@ SelectCar::SelectCar(QWidget* parent) : QWidget(parent) {
         [=](QListWidgetItem* item) {
 
             if (list->currentRow() == 0)
-                Params().remove("CarSelected3");
+                params.remove("CarSelected3");
             else
-                Params().put("CarSelected3", list->currentItem()->text().toStdString());
+                params.put("CarSelected3", list->currentItem()->text().toStdString());
 
             emit selectedCar();
         });

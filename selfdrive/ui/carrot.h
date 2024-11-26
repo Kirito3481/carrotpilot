@@ -25,5 +25,3 @@ void ui_fill_rect(NVGcontext *vg, const Rect1 &r, const NVGcolor &color, float r
 void ui_nvg_init(UIState *s);
 void ui_resize(UIState *s, int width, int height);
 void ui_update_params(UIState *s);
-
-
