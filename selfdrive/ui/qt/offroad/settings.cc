@@ -620,7 +620,7 @@ CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
 
     startToggles = new ListWidget(this);
     QString selected = QString::fromStdString(params.get("CarSelected3"));
-    QPushButton* selectCarBtn = new QPushButton(selected.length() > 1 ? selected : tr("SELECT YOUR CAR"));
+    QPushButton* selectCarBtn = new QPushButton(selected.length() > 1 ? selected : tr("[ Not selected ]"));
     selectCarBtn->setObjectName("selectCarBtn");
     selectCarBtn->setStyleSheet(R"(
         QPushButton {
@@ -638,8 +638,10 @@ CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
     connect(selectCarBtn, &QPushButton::clicked, [=]() {
       QStringList cars = {tr("[ Not selected ]")};
       cars.append(get_list("/data/params/d/SupportedCars"));
+      cars.append(get_list("/data/params/d/SupportedCars_gm"));
+      cars.append(get_list("/data/params/d/SupportedCars_toyota"));
       QString cur = QString::fromStdString(params.get("CarSelected3"));
-      QString selection = MultiOptionDialog::getSelection(tr("SELECT YOUR CAR"), cars, cur, this);
+      QString selection = MultiOptionDialog::getSelection(tr("Select Your Car"), cars, cur, this);
       if (!selection.isEmpty()) {
         params.put("CarSelected3", selection.toStdString());
         selectCarBtn->setText(QString::fromStdString(params.get("CarSelected3")));
