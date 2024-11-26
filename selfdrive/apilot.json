@@ -756,6 +756,19 @@
       "unit": 1
     },
     {
+      "group": "조향일반",
+      "name": "LaneChangeNeedTorque",
+      "title": "차선변경 조향토크 사용",
+      "descr": "차선변경시 조향토크를 줘야 작동함",
+      "egroup": "LAT",
+      "etitle": "LaneChange use steering torque",
+      "edescr": "",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "unit": 1
+    },
+    {
       "group": "시작",
       "name": "HapticFeedbackWhenSpeedCamera",
       "title": "핸들햅틱기능사용(0)",
