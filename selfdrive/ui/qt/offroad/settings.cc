@@ -396,7 +396,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Network"), networking},
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
-    {tr("Carrot"), new CarrotPanel(this)},
+    // {tr("Carrot"), new CarrotPanel(this)},
     {tr("Developer"), new DeveloperPanel(this)},
   };
 
