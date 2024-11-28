@@ -386,6 +386,11 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
 
   sidebar_layout->addLayout(close_button_layout);
 
+  QWidget *buttons_widget = new QWidget;
+  QVBoxLayout *buttons_layout = new QVBoxLayout(buttons_widget);
+  buttons_layout->setMargin(0);
+  buttons_layout->addSpacing(10);
+
   // setup panels
   DevicePanel *device = new DevicePanel(this);
   QObject::connect(device, &DevicePanel::reviewTrainingGuide, this, &SettingsWindow::reviewTrainingGuide);
@@ -396,21 +401,23 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   auto networking = new Networking(this);
   QObject::connect(uiState()->prime_state, &PrimeState::changed, networking, &Networking::setPrimeType);
 
-  QList<QPair<QString, QWidget *>> panels = {
-    {tr("Device"), device},
-    {tr("Network"), networking},
-    {tr("Toggles"), toggles},
-    {tr("Software"), new SoftwarePanel(this)},
-    {tr("Carrot"), new CarrotPanel(this)},
-    {tr("Car"), new CarPanel(this)},
-    {tr("Developer"), new DeveloperPanel(this)},
+  QList<std::tuple<QString, QWidget *, QString>> panels = {
+    {"  " + tr("Device"), device, "../assets/images/img_device.svg"},
+    {"  " + tr("Network"), networking, "../assets/images/img_network.svg"},
+    {"  " + tr("Toggles"), toggles, "../assets/images/img_toggle.svg"},
+    {"  " + tr("Software"), new SoftwarePanel(this), "../assets/images/img_chip.svg"},
+    {"  " + tr("Carrot"), new CarrotPanel(this), "../assets/images/img_carrot.svg"},
+    {"  " + tr("Car"), new CarPanel(this), "../assets/images/img_car.svg"},
+    {"  " + tr("Developer"), new DeveloperPanel(this), "../assets/images/img_development.svg"},
   };
 
   nav_btns = new QButtonGroup(this);
-  for (auto &[name, panel] : panels) {
+  for (auto &[name, panel, icon] : panels) {
     QPushButton *btn = new QPushButton(name);
     btn->setCheckable(true);
     btn->setChecked(nav_btns->buttons().size() == 0);
+    btn->setIcon(QIcon(QPixmap(icon)));
+    btn->setIconSize(QSize(70, 70));
     btn->setStyleSheet(R"(
       QPushButton {
         color: grey;
@@ -420,6 +427,9 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
         font-weight: 500;
         border-radius: 20px;
         width: 400px;
+        height: 98px;
+        text-align: left;
+        padding-left: 22px;
       }
       QPushButton:checked {
         background-color: #292929;
@@ -431,7 +441,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     )");
     btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     nav_btns->addButton(btn);
-    sidebar_layout->addWidget(btn, 0, Qt::AlignLeft);
+    buttons_layout->addWidget(btn, 0, Qt::AlignLeft | Qt::AlignBottom);
 
     const int lr_margin = name != tr("Network") ? 50 : 0;  // Network panel handles its own margins
     panel->setContentsMargins(lr_margin, 25, lr_margin, 25);
@@ -444,12 +454,15 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       panel_widget->setCurrentWidget(w);
     });
   }
-  sidebar_layout->setContentsMargins(40, 50, 80, 50);
+  sidebar_layout->setContentsMargins(50, 50, 25, 50);
 
   // main settings layout, sidebar + main panel
   QHBoxLayout *main_layout = new QHBoxLayout(this);
 
-  sidebar_widget->setFixedWidth(450);
+  ScrollView *buttons_scrollview = new ScrollView(buttons_widget, this);
+  sidebar_layout->addWidget(buttons_scrollview);
+
+  sidebar_widget->setFixedWidth(500);
   main_layout->addWidget(sidebar_widget);
   main_layout->addWidget(panel_widget);
 
