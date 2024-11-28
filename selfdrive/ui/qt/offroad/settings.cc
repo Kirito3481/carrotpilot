@@ -611,45 +611,10 @@ CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
     pathToggles->addItem(new CValueControl("ShowPathWidth", "DISP:Path Width ratio(100%)", "", "../assets/offroad/icon_shell.png", 10, 200, 10));
 
     startToggles = new ListWidget(this);
-    // QString selected = QString::fromStdString(Params().get("CarSelected3"));
-    // QPushButton* selectCarBtn = new QPushButton(selected.length() > 1 ? selected : tr("SELECT YOUR CAR"));
-    // selectCarBtn->setObjectName("selectCarBtn");
-    // selectCarBtn->setStyleSheet(R"(
-    //     QPushButton {
-    //         margin-top: 20px;  /* 위쪽 여백 */
-    //         margin-bottom: 20px;  /* 아래쪽 여백 */
-    //         padding: 10px;  /* 버튼 안쪽 패딩 */
-    //         height: 120px;  /* 버튼 높이 */
-    //         border-radius: 15px;  /* 버튼 모서리 둥글게 */
-    //         background-color: #393939;  /* 버튼 배경색 */
-    //     }
-    //     QPushButton:pressed {
-    //         background-color: #4a4a4a;  /* 버튼 클릭 시 배경색 */
-    //     }
-    // )");
-    //selectCarBtn->setFixedSize(350, 100);
-    // selectCar = new SelectCar(this);
-    // connect(selectCar, &SelectCar::backPress, [=]() { main_layout->setCurrentWidget(homeScreen); });
-    // connect(selectCar, &SelectCar::selectedCar, [=]() {
-    //
-    //     QString selected = QString::fromStdString(Params().get("CarSelected3"));
-    //     selectCarBtn->setText(selected.length() ? selected : tr("SELECT YOUR CAR"));
-    //     main_layout->setCurrentWidget(homeScreen);
-    // });
-    // connect(selectCarBtn, &QPushButton::clicked, [=]() { main_layout->setCurrentWidget(selectCar); });
-    // main_layout->addWidget(selectCar);
-
-    // startToggles->addItem(selectCarBtn);
-    startToggles->addItem(new CValueControl("HyundaiCameraSCC", "HYUNDAI: CAMERA SCC", "Connect the SCC's CAN line to CAM", "../assets/offroad/icon_shell.png", 0, 1, 1));
-    startToggles->addItem(new ParamControl("EnableRadarTracks", "Enable RadarTrack", "", "../assets/offroad/icon_shell.png", this));
-    startToggles->addItem(new ParamControl("CanfdHDA2", "CANFD: HDA2 mode", "", "../assets/offroad/icon_shell.png", this));
     startToggles->addItem(new CValueControl("AutoCruiseControl", "Auto Cruise control", "Softhold, Auto Cruise ON/OFF control", "../assets/offroad/icon_road.png", 0, 3, 1));
     startToggles->addItem(new CValueControl("CruiseOnDist", "CRUISE: Auto ON distance(0cm)", "When GAS/Brake is OFF, Cruise ON when the lead car gets closer.", "../assets/offroad/icon_road.png", 0, 2500, 50));
     startToggles->addItem(new CValueControl("AutoEngage", "Auto Engage control on start", "1:SteerEnable, 2:Steer/Cruise Engage", "../assets/offroad/icon_road.png", 0, 2, 1));
     startToggles->addItem(new CValueControl("AutoGasTokSpeed", "Auto AccelTok speed", "Gas(Accel)Tok enable speed", "../assets/offroad/icon_road.png", 0, 200, 5));
-
-
-
     startToggles->addItem(new CValueControl("SpeedFromPCM", "Read Cruise Speed from PCM", "Toyota must set to 1, Honda 3", "../assets/offroad/icon_road.png", 0, 3, 1));
     startToggles->addItem(new CValueControl("SoundVolumeAdjust", "Adjust Sound Volume(100%)", "", "../assets/offroad/icon_shell.png", 5, 200, 5));
     startToggles->addItem(new CValueControl("SoundVolumeAdjustEngage", "Adjust Sound Volume, Engage(10%)", "", "../assets/offroad/icon_shell.png", 5, 200, 5));
@@ -695,19 +660,19 @@ CarrotPanel::CarrotPanel(QWidget* parent) : QWidget(parent) {
     togglesCarrot(4);
 
     setStyleSheet(R"(
-    #start_btn { height: 120px; border-radius: 15px; background-color: #393939; }
-    #start_btn:pressed { background-color: #4a4a4a; }
-    #cruise_btn { height: 120px; border-radius: 15px; background-color: #393939; }
-    #cruise_btn:pressed { background-color: #4a4a4a; }
-    #speed_btn { height: 120px; border-radius: 15px; background-color: #393939; }
-    #speed_btn:pressed { background-color: #4a4a4a; }
-    #latLong_btn { height: 120px; border-radius: 15px; background-color: #393939; }
-    #latLong_btn:pressed { background-color: #4a4a4a; }
-    #disp_btn { height: 120px; border-radius: 15px; background-color: #393939; }
-    #disp_btn:pressed { background-color: #4a4a4a; }
-    #path_btn { height: 120px; border-radius: 15px; background-color: #393939; }
-    #path_btn:pressed { background-color: #4a4a4a; }
-  )");
+      #start_btn { height: 120px; border-radius: 15px; background-color: #393939; }
+      #start_btn:pressed { background-color: #4a4a4a; }
+      #cruise_btn { height: 120px; border-radius: 15px; background-color: #393939; }
+      #cruise_btn:pressed { background-color: #4a4a4a; }
+      #speed_btn { height: 120px; border-radius: 15px; background-color: #393939; }
+      #speed_btn:pressed { background-color: #4a4a4a; }
+      #latLong_btn { height: 120px; border-radius: 15px; background-color: #393939; }
+      #latLong_btn:pressed { background-color: #4a4a4a; }
+      #disp_btn { height: 120px; border-radius: 15px; background-color: #393939; }
+      #disp_btn:pressed { background-color: #4a4a4a; }
+      #path_btn { height: 120px; border-radius: 15px; background-color: #393939; }
+      #path_btn:pressed { background-color: #4a4a4a; }
+    )");
 
 }
 void CarrotPanel::togglesCarrot(int widgetIndex) {
@@ -718,133 +683,3 @@ void CarrotPanel::togglesCarrot(int widgetIndex) {
     startToggles->setVisible(widgetIndex == 4);
     speedToggles->setVisible(widgetIndex == 5);
 }
-
-
-CValueControl::CValueControl(const QString& params, const QString& title, const QString& desc, const QString& icon, int min, int max, int unit)
-    : AbstractControl(title, desc, icon), m_params(params), m_min(min), m_max(max), m_unit(unit) {
-
-    label.setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    label.setStyleSheet("color: #e0e879");
-    hlayout->addWidget(&label);
-
-    QString btnStyle = R"(
-    padding: 0;
-    border-radius: 50px;
-    font-size: 35px;
-    font-weight: 500;
-    color: #E4E4E4;
-    background-color: #393939;
-  )";
-
-    btnminus.setStyleSheet(btnStyle);
-    btnplus.setStyleSheet(btnStyle);
-    btnminus.setFixedSize(150, 100);
-    btnplus.setFixedSize(150, 100);
-    btnminus.setText("－");
-    btnplus.setText("＋");
-    hlayout->addWidget(&btnminus);
-    hlayout->addWidget(&btnplus);
-
-    connect(&btnminus, &QPushButton::released, this, &CValueControl::decreaseValue);
-    connect(&btnplus, &QPushButton::released, this, &CValueControl::increaseValue);
-
-    refresh();
-}
-
-void CValueControl::showEvent(QShowEvent* event) {
-    AbstractControl::showEvent(event);
-    refresh();
-}
-
-void CValueControl::refresh() {
-    label.setText(QString::fromStdString(Params().get(m_params.toStdString())));
-}
-
-void CValueControl::adjustValue(int delta) {
-    int value = QString::fromStdString(Params().get(m_params.toStdString())).toInt();
-    value = qBound(m_min, value + delta, m_max);
-    Params().putInt(m_params.toStdString(), value);
-    refresh();
-}
-
-void CValueControl::increaseValue() {
-    adjustValue(m_unit);
-}
-
-void CValueControl::decreaseValue() {
-    adjustValue(-m_unit);
-}
-
-
-// static QStringList get_list(const char* path)
-// {
-//     QStringList stringList;
-//     QFile textFile(path);
-//     if (textFile.open(QIODevice::ReadOnly))
-//     {
-//         QTextStream textStream(&textFile);
-//         while (true)
-//         {
-//             QString line = textStream.readLine();
-//             if (line.isNull())
-//                 break;
-//             else
-//                 stringList.append(line);
-//         }
-//     }
-
-//     return stringList;
-// }
-// SelectCar::SelectCar(QWidget* parent) : QWidget(parent) {
-
-//     QVBoxLayout* main_layout = new QVBoxLayout(this);
-//     main_layout->setMargin(20);
-//     main_layout->setSpacing(20);
-
-//     // Back button
-//     QPushButton* back = new QPushButton(tr("Back"));
-//     back->setObjectName("back_btn");
-//     back->setFixedSize(500, 100);
-//     connect(back, &QPushButton::clicked, [=]() { emit backPress(); });
-//     main_layout->addWidget(back, 0, Qt::AlignLeft);
-
-//     QListWidget* list = new QListWidget(this);
-//     list->setStyleSheet("QListView {padding: 40px; background-color: #393939; border-radius: 15px; height: 140px;} QListView::item{height: 100px}");
-//     //list->setAttribute(Qt::WA_AcceptTouchEvents, true);
-//     QScroller::grabGesture(list->viewport(), QScroller::LeftMouseButtonGesture);
-//     list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-
-//     list->addItem(tr("[ Not selected ]"));
-
-//     QStringList items = get_list("/data/params/d/SupportedCars");
-//     QStringList items_gm = get_list("/data/params/d/SupportedCars_gm");
-//     QStringList items_toyota = get_list("/data/params/d/SupportedCars_toyota");
-//     list->addItems(items);
-//     list->addItems(items_gm);
-//     list->addItems(items_toyota);
-//     list->setCurrentRow(0);
-
-//     QString selected = QString::fromStdString(Params().get("CarSelected3"));
-
-//     int index = 0;
-//     for (QString item : items) {
-//         if (selected == item) {
-//             list->setCurrentRow(index + 1);
-//             break;
-//         }
-//         index++;
-//     }
-
-//     QObject::connect(list, QOverload<QListWidgetItem*>::of(&QListWidget::itemClicked),
-//         [=](QListWidgetItem* item) {
-
-//             if (list->currentRow() == 0)
-//                 Params().remove("CarSelected3");
-//             else
-//                 Params().put("CarSelected3", list->currentItem()->text().toStdString());
-
-//             emit selectedCar();
-//         });
-
-//     main_layout->addWidget(list);
-// }

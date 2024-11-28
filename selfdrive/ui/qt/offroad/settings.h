@@ -98,20 +98,6 @@ private:
 };
 
 
-
-
-// class SelectCar : public QWidget {
-//   Q_OBJECT
-// public:
-//   explicit SelectCar(QWidget* parent = 0);
-
-// private:
-
-// signals:
-//   void backPress();
-//   void selectedCar();
-
-// };
 class CarrotPanel : public QWidget {
     Q_OBJECT
 
@@ -129,34 +115,8 @@ private:
     ListWidget* startToggles;
     ListWidget* speedToggles;
 
-    // SelectCar* selectCar = nullptr;
     void togglesCarrot(int widgetIndex);
 
 public:
     explicit CarrotPanel(QWidget* parent = nullptr);
-};
-
-class CValueControl : public AbstractControl {
-    Q_OBJECT
-
-public:
-    CValueControl(const QString& params, const QString& title, const QString& desc, const QString& icon, int min, int max, int unit = 1);
-
-private slots:
-    void increaseValue();
-    void decreaseValue();
-
-private:
-    void showEvent(QShowEvent* event) override;
-    void refresh();
-    void adjustValue(int delta);
-
-    QPushButton btnplus;
-    QPushButton btnminus;
-    QLabel label;
-
-    QString m_params;
-    int m_min;
-    int m_max;
-    int m_unit;
 };

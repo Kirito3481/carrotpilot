@@ -62,6 +62,10 @@ void SelectCar::refresh() {
 
 CarPanel::CarPanel(SettingsWindow *parent) : ListWidget(parent) {
   addItem(new SelectCar());
+
+  addItem(new CValueControl("HyundaiCameraSCC", "HYUNDAI: CAMERA SCC", "Connect the SCC's CAN line to CAM", "../assets/offroad/icon_shell.png", 0, 1, 1));
+  addItem(new ParamControl("EnableRadarTracks", "Enable RadarTrack", "", "../assets/offroad/icon_shell.png", this));
+  addItem(new ParamControl("CanfdHDA2", "CANFD: HDA2 mode", "", "../assets/offroad/icon_shell.png", this));
 }
 
 void CarPanel::updateToggles() {

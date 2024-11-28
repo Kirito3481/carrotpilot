@@ -294,3 +294,28 @@ public:
     setLayout(l);
   }
 };
+
+class CValueControl : public AbstractControl {
+    Q_OBJECT
+
+public:
+    CValueControl(const QString& params, const QString& title, const QString& desc, const QString& icon, int min, int max, int unit = 1);
+
+private slots:
+    void increaseValue();
+    void decreaseValue();
+
+private:
+    void showEvent(QShowEvent* event) override;
+    void refresh();
+    void adjustValue(int delta);
+
+    QPushButton btnplus;
+    QPushButton btnminus;
+    QLabel label;
+
+    QString m_params;
+    int m_min;
+    int m_max;
+    int m_unit;
+};

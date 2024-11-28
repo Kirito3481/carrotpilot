@@ -139,3 +139,64 @@ void ParamControl::toggleClicked(bool state) {
     toggle.togglePosition();
   }
 }
+
+CValueControl::CValueControl(const QString& params, const QString& title, const QString& desc, const QString& icon, int min, int max, int unit)
+    : AbstractControl(title, desc, icon), m_params(params), m_min(min), m_max(max), m_unit(unit) {
+
+    label.setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+    label.setStyleSheet("color: #e0e879");
+    hlayout->addWidget(&label);
+
+    btnminus.setFixedSize(150, 100);
+    btnplus.setFixedSize(150, 100);
+    btnminus.setText("－");
+    btnplus.setText("＋");
+    btnplus.setObjectName("plus_btn");
+    btnminus.setObjectName("minus_btn");
+    hlayout->addWidget(&btnminus);
+    hlayout->addWidget(&btnplus);
+
+    connect(&btnminus, &QPushButton::released, this, &CValueControl::decreaseValue);
+    connect(&btnplus, &QPushButton::released, this, &CValueControl::increaseValue);
+
+    setStyleSheet(R"(
+      QPushButton#plus_btn, QPushButton#minus_btn {
+        border-radius: 50px;
+        font-size: 40px;
+        font-weight: 500;
+        height: 100px;
+        padding: 0 25 0 25;
+        color: #E4E4E4;
+        background-color: #393939;
+      }
+      QPushButton#plus_btn:pressed, QPushButton#minus_btn:pressed {
+        background-color: #4a4a4a;
+      }
+    )");
+
+    refresh();
+}
+
+void CValueControl::showEvent(QShowEvent* event) {
+    AbstractControl::showEvent(event);
+    refresh();
+}
+
+void CValueControl::refresh() {
+    label.setText(QString::fromStdString(Params().get(m_params.toStdString())));
+}
+
+void CValueControl::adjustValue(int delta) {
+    int value = QString::fromStdString(Params().get(m_params.toStdString())).toInt();
+    value = qBound(m_min, value + delta, m_max);
+    Params().putInt(m_params.toStdString(), value);
+    refresh();
+}
+
+void CValueControl::increaseValue() {
+    adjustValue(m_unit);
+}
+
+void CValueControl::decreaseValue() {
+    adjustValue(-m_unit);
+}
