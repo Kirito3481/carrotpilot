@@ -40,8 +40,9 @@ SelectCar::SelectCar() :
         params.remove("CarSelected3");
       } else {
         params.put("CarSelected3", selection.toStdString());
-        refresh();
       }
+
+      refresh();
 
       ConfirmationDialog::alert(tr("You need to restart the car for the changes to take effect."), this);
     }
