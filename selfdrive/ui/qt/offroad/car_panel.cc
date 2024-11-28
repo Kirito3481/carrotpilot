@@ -33,7 +33,7 @@ SelectCar::SelectCar() :
     supportedCars.append(get_list("/data/params/d/SupportedCars_gm"));
     supportedCars.append(get_list("/data/params/d/SupportedCars_toyota"));
 
-    QString selection = MultiOptionDialog::getSelection(tr("Select a car"), supportedCars, selectedCar, this);
+    QString selection = MultiOptionDialog::getSelection(tr("Select a car"), supportedCars, (selectedCar.length() > 1) ? selectedCar : tr("[ Not selected ]"), this);
 
     if (!selection.isEmpty()) {
       if (selection == tr("[ Not selected ]")) {
@@ -42,9 +42,9 @@ SelectCar::SelectCar() :
         params.put("CarSelected3", selection.toStdString());
         refresh();
       }
-    }
 
-    ConfirmationDialog::alert(tr("You need to restart the car for the changes to take effect."), this);
+      ConfirmationDialog::alert(tr("You need to restart the car for the changes to take effect."), this);
+    }
   });
 
   refresh();
@@ -55,7 +55,7 @@ void SelectCar::refresh() {
   if (selectedCar.length() > 1) {
     setValue(selectedCar);
   } else {
-    setValue(tr("[ Not selected ]"));
+    setValue(QString::fromStdString(params.get("CarName")));
   }
 }
 
