@@ -180,6 +180,8 @@ class CarController(CarControllerBase):
       if self.frame % 5 == 0 and hda2 and not camera_scc:
         can_sends.append(hyundaicanfd.create_suppress_lfa(self.packer, self.CAN, CS.hda2_lfa_block_msg,
                                                           self.CP.flags & HyundaiFlags.CANFD_HDA2_ALT_STEERING))
+        
+        can_sends.append(hyundaicanfd.create_test_msg(self.packer, self.CAN, CS.adrv_info_161))
 
       # LFA and HDA icons
       if self.frame % 5 == 0 and (not hda2 or hda2_long):
@@ -188,8 +190,8 @@ class CarController(CarControllerBase):
 
       # blinkers
       if hda2 and self.CP.flags & HyundaiFlags.ENABLE_BLINKERS:
-        # can_sends.extend(hyundaicanfd.create_spas_messages(self.packer, self.CAN, self.frame, CC.leftBlinker, CC.rightBlinker))
-        can_sends.extend(hyundaicanfd.create_spas_messages(self.packer, self.CAN, self.frame, True, CC.rightBlinker))
+        can_sends.extend(hyundaicanfd.create_spas_messages(self.packer, self.CAN, self.frame, CC.leftBlinker, CC.rightBlinker))
+        # can_sends.extend(hyundaicanfd.create_spas_messages(self.packer, self.CAN, self.frame, True, CC.rightBlinker))
 
       if self.CP.openpilotLongitudinalControl:
         self.hyundai_jerk.make_jerk(self.CP, CS, accel, actuators, hud_control)
