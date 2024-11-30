@@ -473,7 +473,7 @@ def create_adrv_messages(CP, packer, CAN, frame, CC, CS, hud_control):
         values["SIGNAL234"] = 0
         values["SIGNAL240"] = 0
         values["SIGNAL246"] = 0
-        ret.append(packer.make_can_msg("CORNER_RADAR_HIGHWAY", CAN.ECAN, values))
+        # ret.append(packer.make_can_msg("CORNER_RADAR_HIGHWAY", CAN.ECAN, values))
     return ret
   else:
     values = {}
