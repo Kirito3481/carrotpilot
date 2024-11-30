@@ -260,13 +260,10 @@ def create_lfahda_cluster(packer, CAN, enabled):
   }
   return packer.make_can_msg("LFAHDA_CLUSTER", CAN.ECAN, values)
 
-def block_faults(packer, CAN, enabled, block_faults):
-  values = {s: block_faults[s] for s in block_faults.keys()}
-  values.update({
-    "FAULT_1": 1,
-    "FAULT_2": 0,
-  })
-  return packer.make_can_msg("NEW_MSG_162", CAN.ECAN, values)
+def create_test_msg(packer, CAN, adrv_0x161):
+  print(adrv_0x161.keys())
+  values = {}
+  return packer.make_can_msg("ADRV_0x161", CAN.ECAN, values)
 
 
 def create_acc_control_scc2(packer, CAN, enabled, accel_last, accel, stopping, gas_override, set_speed, hud_control, jerk_u, jerk_l, CS):
@@ -443,7 +440,7 @@ def create_adrv_messages(CP, packer, CAN, frame, CC, CS, hud_control):
 
           values["NEW_SIGNAL_12"] = 0   ## 띠링 경고
           
-          # ret.append(packer.make_can_msg("ADRV_0x161", CAN.ECAN, values))
+          ret.append(packer.make_can_msg("ADRV_0x161", CAN.ECAN, values))
         else:
           print("no adrv_info_161")
 
@@ -473,7 +470,7 @@ def create_adrv_messages(CP, packer, CAN, frame, CC, CS, hud_control):
         values["SIGNAL234"] = 0
         values["SIGNAL240"] = 0
         values["SIGNAL246"] = 0
-        # ret.append(packer.make_can_msg("CORNER_RADAR_HIGHWAY", CAN.ECAN, values))
+        ret.append(packer.make_can_msg("CORNER_RADAR_HIGHWAY", CAN.ECAN, values))
     return ret
   else:
     values = {}

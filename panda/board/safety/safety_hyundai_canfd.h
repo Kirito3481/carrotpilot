@@ -181,7 +181,7 @@ const int HYUNDAI_PARAM_CANFD_HDA2_ALT_STEERING = 128;
 bool hyundai_canfd_alt_buttons = false;
 bool hyundai_canfd_hda2_alt_steering = false;
 
-int canfd_tx_addr[32] = { 80, 81, 272, 282, 298, 352, 353, 354, 442, 485, 416, 437, 506, 474, 480, 490, 512, 676, 866, 837, 1402, 908, 1848, 0, 0x161, 0x162};
+int canfd_tx_addr[32] = { 80, 81, 272, 282, 298, 352, 353, 354, 442, 485, 416, 437, 506, 474, 480, 490, 512, 676, 866, 837, 1402, 908, 1848, 0, };
 uint32_t canfd_tx_time[32] = { 0, };
 
 int hyundai_canfd_hda2_get_lkas_addr(void) {
@@ -441,6 +441,11 @@ static int hyundai_canfd_fwd_hook(int bus_num, int addr) {
       //if (addr == 698) bus_fwd = -1;
       //if (addr == 1848) bus_fwd = -1;
       //if (addr == 1996) bus_fwd = -1;
+
+      // bool is_new_msg = (addr == 0x161) || (addr == 0x162);
+      // if (is_new_msg) {
+      //   bus_fwd = -1;
+      // }
 #else
     // LKAS for HDA2, LFA for HDA1
     int hda2_lfa_block_addr = hyundai_canfd_hda2_alt_steering ? 0x362 : 0x2a4;

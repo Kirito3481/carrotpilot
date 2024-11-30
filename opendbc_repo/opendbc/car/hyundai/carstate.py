@@ -55,8 +55,6 @@ class CarState(CarStateBase):
     self.buttons_counter = 0
 
     self.cruise_info = {}
-    self.cluster_info = {}
-    self.block_faults = {}
     self.lfa_info = {}
     self.adrv_info_161 = None
     self.adrv_info_200 = None
@@ -377,11 +375,11 @@ class CarState(CarStateBase):
       self.cruise_info = copy.copy(cp_cam.vl["SCC_CONTROL"])
       self.lfa_info = copy.copy(cp_cam.vl["LFA"])
 
-      # if self.CP.extFlags & HyundaiExtFlags.CANFD_161.value:
-      #   if "ADRV_0x161" in cp_cam.vl:
-      #     self.adrv_info_161 = copy.copy(cp_cam.vl.get("ADRV_0x161", {}))
-      #   if "CORNER_RADAR_HIGHWAY" in cp_cam.vl:
-      #     self.adrv_info_162 = copy.copy(cp_cam.vl.get("CORNER_RADAR_HIGHWAY", {}))
+      if self.CP.extFlags & HyundaiExtFlags.CANFD_161.value:
+        if "ADRV_0x161" in cp_cam.vl:
+          self.adrv_info_161 = copy.copy(cp_cam.vl.get("ADRV_0x161", {}))
+        if "CORNER_RADAR_HIGHWAY" in cp_cam.vl:
+          self.adrv_info_162 = copy.copy(cp_cam.vl.get("CORNER_RADAR_HIGHWAY", {}))
       if "ADRV_0x200" in cp_cam.vl:
         self.adrv_info_200 = copy.copy(cp_cam.vl.get("ADRV_0x200", {}))
       if "ADRV_0x1ea" in cp_cam.vl:
@@ -435,9 +433,6 @@ class CarState(CarStateBase):
 
     ret.buttonEvents = [*create_button_events(self.cruise_buttons[-1], prev_cruise_buttons, BUTTONS_DICT),
                         *create_button_events(self.main_buttons[-1], prev_main_buttons, {1: ButtonType.mainCruise})]
-    
-    self.cluster_info = copy.copy(cp.vl["NEW_MSG_161"])
-    self.block_faults = copy.copy(cp.vl["NEW_MSG_162"])
 
     return ret
 
@@ -513,8 +508,8 @@ class CarState(CarStateBase):
         ]
       if CP.extFlags & HyundaiExtFlags.CANFD_161:
         cam_messages += [
-          # ("ADRV_0x161", 20),
-          # ("CORNER_RADAR_HIGHWAY", 20),
+          ("ADRV_0x161", 20),
+          ("CORNER_RADAR_HIGHWAY", 20),
         ]
 
     #if not (CP.flags & HyundaiFlags.CANFD_HDA2) and CP.extFlags & HyundaiExtFlags.NAVI_CLUSTER.value and (CP.extFlags & HyundaiExtFlags.SCC_BUS2.value) :
@@ -528,11 +523,6 @@ class CarState(CarStateBase):
         cam_messages += [
           ("BLINDSPOTS_REAR_CORNERS", 20),
         ]
-
-    cam_messages += [
-      ("NEW_MSG_161", 20),
-      ("NEW_MSG_162", 20),
-    ]
 
     return {
       Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_messages, CanBus(CP).ECAN),
