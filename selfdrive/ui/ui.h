@@ -64,6 +64,8 @@ typedef struct UIScene {
   float light_sensor = -1;
   bool started, ignition, is_metric;
   uint64_t started_frame;
+
+  int brightness;
 } UIScene;
 
 class UIState : public QObject {
@@ -85,6 +87,7 @@ public:
   UIScene scene = {};
   QString language;
   PrimeState *prime_state;
+  Params params;
 
   float max_distance = 0.0;
   float show_brightness_ratio = 1.0;

@@ -88,6 +88,8 @@ void UIState::updateStatus() {
     started_prev = scene.started;
     emit offroadTransition(!scene.started);
   }
+
+  scene.brightness = std::atoi(params.get("BrightnessControl").c_str());
 }
 
 UIState::UIState(QObject *parent) : QObject(parent) {
@@ -175,9 +177,23 @@ void Device::updateBrightness(const UIState &s) {
       //printf("show_brightness_timer: %d, clipped_brightness = %.2f ratio = %.1f\n", s.show_brightness_timer, clipped_brightness, s.show_brightness_ratio);
   }
 
+  // int brightness = brightness_filter.update(clipped_brightness);
+  // if (!awake) {
+  //   brightness = 0;
+  // }
+
+  // if (brightness != last_brightness) {
+  //   if (!brightness_future.isRunning()) {
+  //     brightness_future = QtConcurrent::run(Hardware::set_brightness, brightness);
+  //     last_brightness = brightness;
+  //   }
+  // }
+
   int brightness = brightness_filter.update(clipped_brightness);
   if (!awake) {
     brightness = 0;
+  } else if (s.scene.brightness) {
+    brightness = s.scene.brightness * 0.99;
   }
 
   if (brightness != last_brightness) {

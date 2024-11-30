@@ -119,6 +119,7 @@ def get_default_params():
     ("CruiseOnDist", "400"),
     ("HotspotOnBoot", "0"),
     ("CustomSR", "0"),
+    ("BrightnessControl", "0"),
   ]
   return default_params
 

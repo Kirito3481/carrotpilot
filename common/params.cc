@@ -211,7 +211,10 @@ std::unordered_map<std::string, uint32_t> keys = {
     { "ShowDebugUI", PERSISTENT },
     { "ShowDateTime", PERSISTENT },
     { "ShowPathEnd", PERSISTENT },
-    { "ShowCustomBrightness", PERSISTENT },
+    { "ShowCustomBrightness", PERSISTENT }, // TODO: Remove this
+
+    {"BrightnessControl", PERSISTENT},
+
     { "ShowLaneInfo", PERSISTENT },
     { "ShowRadarInfo", PERSISTENT },
     { "ShowPathMode", PERSISTENT },
