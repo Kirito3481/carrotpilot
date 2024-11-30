@@ -347,12 +347,14 @@ class CarState(CarStateBase):
       cp_ = cp_cam if (self.CP.flags & HyundaiFlags.CAMERA_SCC and self.CP.extFlags & HyundaiExtFlags.BSM_IN_ADAS.value) else cp
       #ret.leftBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FL_INDICATOR"] != 0
       #ret.rightBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FR_INDICATOR"] != 0
-      if self.CP.extFlags & HyundaiExtFlags.BSM_IN_ADAS.value:
-        ret.leftBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["INDICATOR_LEFT_FOUR"] != 0
-        ret.rightBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["INDICATOR_RIGHT_FOUR"] != 0
-      else:
-        ret.leftBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["FL_INDICATOR"] != 0
-        ret.rightBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["FR_INDICATOR"] != 0
+      # if self.CP.extFlags & HyundaiExtFlags.BSM_IN_ADAS.value:
+      #   ret.leftBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["INDICATOR_LEFT_FOUR"] != 0
+      #   ret.rightBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["INDICATOR_RIGHT_FOUR"] != 0
+      # else:
+      #   ret.leftBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["FL_INDICATOR"] != 0
+      #   ret.rightBlindspot = cp_.vl["BLINDSPOTS_REAR_CORNERS"]["FR_INDICATOR"] != 0
+      ret.leftBlindspot = False
+      ret.rightBlindspot = False
 
     # cruise state
     # CAN FD cars enable on main button press, set available if no TCS faults preventing engagement
