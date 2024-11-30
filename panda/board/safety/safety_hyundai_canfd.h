@@ -32,8 +32,8 @@ const CanMsg HYUNDAI_CANFD_HDA2_ALT_STEERING_TX_MSGS[] = {
   {0x1CF, 1, 8},  // CRUISE_BUTTON
   {0x362, 0, 32}, // CAM_0x362
   {0x1AA, 1, 16}, // CRUISE_ALT_BUTTONS , carrot
-  {0x161, 1, 161}, // NEW_MSG_161
-  {0x162, 1, 162}, // NEW_MSG_162
+  {0x161, 1, 32}, // NEW_MSG_161
+  {0x162, 1, 32}, // NEW_MSG_162
 };
 
 const CanMsg HYUNDAI_CANFD_HDA2_LONG_TX_MSGS[] = {

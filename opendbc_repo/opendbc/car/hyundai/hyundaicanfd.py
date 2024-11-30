@@ -262,6 +262,10 @@ def create_lfahda_cluster(packer, CAN, enabled):
 
 def block_faults(packer, CAN, enabled, block_faults):
   values = {s: block_faults[s] for s in block_faults.keys()}
+  values.update({
+    "FAULT_1": 1,
+    "FAULT_2": 0,
+  })
   return packer.make_can_msg("NEW_MSG_162", CAN.ECAN, values)
 
 
@@ -439,7 +443,7 @@ def create_adrv_messages(CP, packer, CAN, frame, CC, CS, hud_control):
 
           values["NEW_SIGNAL_12"] = 0   ## 띠링 경고
           
-          ret.append(packer.make_can_msg("ADRV_0x161", CAN.ECAN, values))
+          # ret.append(packer.make_can_msg("ADRV_0x161", CAN.ECAN, values))
         else:
           print("no adrv_info_161")
 
