@@ -55,6 +55,7 @@ class CarState(CarStateBase):
     self.buttons_counter = 0
 
     self.cruise_info = {}
+    self.cluster_info = {}
     self.block_faults = {}
     self.lfa_info = {}
     self.adrv_info_161 = None
