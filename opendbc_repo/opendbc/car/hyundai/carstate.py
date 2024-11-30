@@ -480,7 +480,7 @@ class CarState(CarStateBase):
         pass
       else:
         pt_messages += [
-          ("BLINDSPOTS_REAR_CORNERS", 20),
+          # ("BLINDSPOTS_REAR_CORNERS", 20),
         ]
 
     if not (CP.flags & HyundaiFlags.CANFD_CAMERA_SCC.value) and not CP.openpilotLongitudinalControl:
