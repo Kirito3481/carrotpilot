@@ -32,6 +32,8 @@ const CanMsg HYUNDAI_CANFD_HDA2_ALT_STEERING_TX_MSGS[] = {
   {0x1CF, 1, 8},  // CRUISE_BUTTON
   {0x362, 0, 32}, // CAM_0x362
   {0x1AA, 1, 16}, // CRUISE_ALT_BUTTONS , carrot
+  {0x161, 1, 161}, // NEW_MSG_161
+  {0x162, 1, 162}, // NEW_MSG_162
 };
 
 const CanMsg HYUNDAI_CANFD_HDA2_LONG_TX_MSGS[] = {
@@ -439,6 +441,11 @@ static int hyundai_canfd_fwd_hook(int bus_num, int addr) {
       //if (addr == 698) bus_fwd = -1;
       //if (addr == 1848) bus_fwd = -1;
       //if (addr == 1996) bus_fwd = -1;
+
+      bool is_new_msg = (addr == 0x161) || (addr == 0x162);
+      if (is_new_msg) {
+        bus_fwd = -1;
+      }
 #else
     // LKAS for HDA2, LFA for HDA1
     int hda2_lfa_block_addr = hyundai_canfd_hda2_alt_steering ? 0x362 : 0x2a4;

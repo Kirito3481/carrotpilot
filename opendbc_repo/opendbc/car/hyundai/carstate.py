@@ -55,6 +55,7 @@ class CarState(CarStateBase):
     self.buttons_counter = 0
 
     self.cruise_info = {}
+    self.block_faults = {}
     self.lfa_info = {}
     self.adrv_info_161 = None
     self.adrv_info_200 = None
@@ -433,6 +434,9 @@ class CarState(CarStateBase):
 
     ret.buttonEvents = [*create_button_events(self.cruise_buttons[-1], prev_cruise_buttons, BUTTONS_DICT),
                         *create_button_events(self.main_buttons[-1], prev_main_buttons, {1: ButtonType.mainCruise})]
+    
+    self.cluster_info = copy.copy(cp.vl["NEW_MSG_161"])
+    self.block_faults = copy.copy(cp.vl["NEW_MSG_162"])
 
     return ret
 
@@ -523,6 +527,11 @@ class CarState(CarStateBase):
         cam_messages += [
           ("BLINDSPOTS_REAR_CORNERS", 20),
         ]
+
+    cam_messages += [
+      ("NEW_MSG_161", 20),
+      ("NEW_MSG_162", 20),
+    ]
 
     return {
       Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_messages, CanBus(CP).ECAN),
