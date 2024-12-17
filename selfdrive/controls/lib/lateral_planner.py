@@ -209,7 +209,7 @@ class LateralPlanner:
     #plan_send.lateralPlan.dPathWLinesY = [float(y) for y in self.d_path_w_lines_xyz[:, 1]]
     #lateralPlan.laneWidthLeft = float(self.DH.lane_width_left)
     #lateralPlan.laneWidthRight = float(self.DH.lane_width_right)
-    
+
     self.x_sol = self.lat_mpc.x_sol
 
     debugText = "{} | {:.1f}m | {:.1f}m | {:.1f}m | {}".format(
@@ -228,4 +228,4 @@ class LateralPlanner:
 
     pm.send('lateralPlan', plan_send)
 
-    
+
