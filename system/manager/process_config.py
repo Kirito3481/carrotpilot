@@ -6,8 +6,8 @@ from openpilot.common.params import Params
 from openpilot.system.hardware import PC, TICI
 from openpilot.system.manager.process import PythonProcess, NativeProcess, DaemonProcess
 try:
-    import flask
-    FLASK_AVAILABLE = True
+    import importlib.util
+    FLASK_AVAILABLE = importlib.util.find_spec("flask") is not None
 except ImportError:
     FLASK_AVAILABLE = False
 
