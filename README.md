@@ -14,8 +14,11 @@ Quick start: `bash <(curl -fsSL smiskol.com/fork/ajouatom/carrot2-v6)`
 
 </div>
 
+<h1>Do not install this branch! This branch is only for testing.</h1>
+We are not responsible for accidents that occur while installing and using them. We are not responsible even if the comma device is blocked.
+
 Safety and Testing
-----
+------
 
 * carrotpilot observes [ISO26262](https://en.wikipedia.org/wiki/ISO_26262) guidelines, see [SAFETY.md](docs/SAFETY.md) for more details.
 * carrotpilot has software-in-the-loop [tests](.github/workflows/selfdrive_tests.yaml) that run on every commit.
