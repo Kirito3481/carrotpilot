@@ -83,7 +83,7 @@ def download_dcamera(route, segment):
 
 
 def upload_folder_to_ftp(local_folder, directory, remote_path):
-    from tqdm import tqdm  # tqdmÀ¸·Î ÁøÇà ¹Ù Ç¥½Ã
+    from tqdm import tqdm  # tqdmìœ¼ë¡œ ì§„í–‰ ë°” í‘œì‹œ
     ftp_server = "shind0.synology.me"
     ftp_port = 8021
     ftp_username = "carrotpilot"
@@ -105,14 +105,14 @@ def upload_folder_to_ftp(local_folder, directory, remote_path):
           print(f"Directory creation failed: {e}")
         ftp.cwd(remote_path)
 
-        # ·ÎÄÃ Æú´õÀÇ ¸ğµç ÆÄÀÏ °¡Á®¿À±â
+        # ë¡œì»¬ í´ë”ì˜ ëª¨ë“  íŒŒì¼ ê°€ì ¸ì˜¤ê¸°
         files = [
             os.path.join(root, filename)
             for root, _, filenames in os.walk(local_folder)
             for filename in filenames
         ]
 
-        # tqdmÀ» »ç¿ëÇÑ ÁøÇà ¹Ù Ç¥½Ã
+        # tqdmì„ ì‚¬ìš©í•œ ì§„í–‰ ë°” í‘œì‹œ
         with tqdm(total=len(files), desc="Uploading Files", unit="file") as pbar:
             for local_file in files:
                 filename = os.path.basename(local_file)
@@ -124,7 +124,7 @@ def upload_folder_to_ftp(local_folder, directory, remote_path):
                   except Exception as e:
                       print(f"Failed to upload {local_file}: {e}")
 
-                  pbar.update(1)  # ÁøÇà ¹Ù ¾÷µ¥ÀÌÆ®
+                  pbar.update(1)  # ì§„í–‰ ë°” ì—…ë°ì´íŠ¸
 
         ftp.quit()
         return True
@@ -138,7 +138,7 @@ def upload_carrot(route, segment):
 
     local_folder = Paths.log_root() + f"{route}--{segment}"
 
-    # Æú´õ°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+    # í´ë”ê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
     if not os.path.isdir(local_folder):
         print(f"Folder not found: {local_folder}")
         return abort(404, "Folder not found")
@@ -151,7 +151,7 @@ def upload_carrot(route, segment):
 
     directory = "routes " + car_selected + " " + Params().get("DongleId").decode('utf-8')
 
-    # FTP·Î Æú´õ¿Í ÆÄÀÏ ¾÷·Îµå ¼öÇà
+    # FTPë¡œ í´ë”ì™€ íŒŒì¼ ì—…ë¡œë“œ ìˆ˜í–‰
     #remote_path = f"{directory}/{route}--{segment}"
     success = upload_folder_to_ftp(local_folder, directory, f"{route}--{segment}")
 
