@@ -6,7 +6,6 @@ from openpilot.common.swaglog import cloudlog
 from openpilot.selfdrive.controls.lib.lateral_mpc_lib.lat_mpc import LateralMpc
 from openpilot.selfdrive.controls.lib.lateral_mpc_lib.lat_mpc import N as LAT_MPC_N
 from openpilot.selfdrive.controls.lib.drive_helpers import CONTROL_N, MIN_SPEED, get_speed_error
-from openpilot.selfdrive.controls.lib.desire_helper import DesireHelper
 import cereal.messaging as messaging
 from cereal import log
 
@@ -217,7 +216,7 @@ class LateralPlanner:
       self.LP.lane_width_left,
       self.LP.lane_width,
       self.LP.lane_width_right,
-      "offset={:.1f}cm turn={:.0f}km/h".format(self.LP.offset_total*100.0, clip(self.curve_speed, -200, 200)) if self.lanelines_active else "")
+      f"offset={self.LP.offset_total*100.0:.1f}cm turn={clip(self.curve_speed, -200, 200):.0f}km/h" if self.lanelines_active else "")
 
     lateralPlan.latDebugText = debugText
     #lateralPlan.latDebugText = self.latDebugText

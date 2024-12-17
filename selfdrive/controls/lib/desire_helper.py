@@ -37,25 +37,25 @@ TURN_DESIRES = {
   TurnDirection.turnRight: log.Desire.turnRight,
 }
 
-def calculate_lane_width_frog(lane, current_lane, road_edge):
-  lane_x, lane_y = np.array(lane.x), np.array(lane.y)
-  edge_x, edge_y = np.array(road_edge.x), np.array(road_edge.y)
-  current_x, current_y = np.array(current_lane.x), np.array(current_lane.y)
+# def calculate_lane_width_frog(lane, current_lane, road_edge):
+#   lane_x, lane_y = np.array(lane.x), np.array(lane.y)
+#   edge_x, edge_y = np.array(road_edge.x), np.array(road_edge.y)
+#   current_x, current_y = np.array(current_lane.x), np.array(current_lane.y)
 
-  lane_y_interp = np.interp(current_x, lane_x[lane_x.argsort()], lane_y[lane_x.argsort()])
-  road_edge_y_interp = np.interp(current_x, edge_x[edge_x.argsort()], edge_y[edge_x.argsort()])
+#   lane_y_interp = np.interp(current_x, lane_x[lane_x.argsort()], lane_y[lane_x.argsort()])
+#   road_edge_y_interp = np.interp(current_x, edge_x[edge_x.argsort()], edge_y[edge_x.argsort()])
 
-  distance_to_lane = np.mean(np.abs(current_y - lane_y_interp))
-  distance_to_road_edge = np.mean(np.abs(current_y - road_edge_y_interp))
+#   distance_to_lane = np.mean(np.abs(current_y - lane_y_interp))
+#   distance_to_road_edge = np.mean(np.abs(current_y - road_edge_y_interp))
 
-  return min(distance_to_lane, distance_to_road_edge), distance_to_road_edge
+#   return min(distance_to_lane, distance_to_road_edge), distance_to_road_edge
 
 def calculate_lane_width(lane, lane_prob, current_lane, road_edge):
   index = 10 # 약 1초 앞의 차선.
   distance_to_lane = abs(current_lane.y[index] - lane.y[index])
   #if lane_prob < 0.3:# 차선이 없으면 없는것으로 간주시킴.
   #  distance_to_lane = min(2.0, distance_to_lane)
-  distance_to_road_edge = abs(current_lane.y[index] - road_edge.y[index]);
+  distance_to_road_edge = abs(current_lane.y[index] - road_edge.y[index])
   return min(distance_to_lane, distance_to_road_edge), distance_to_road_edge, lane_prob > 0.5
 
 class ExistCounter:
@@ -154,8 +154,12 @@ class DesireHelper:
       self.blinker_ignore = False
     one_blinker &= not self.blinker_ignore
 
-    self.lane_width_left, self.distance_to_road_edge_left, lane_prob_left = calculate_lane_width(modeldata.laneLines[0], modeldata.laneLineProbs[0], modeldata.laneLines[1], modeldata.roadEdges[0])
-    self.lane_width_right, self.distance_to_road_edge_right, lane_prob_right = calculate_lane_width(modeldata.laneLines[3], modeldata.laneLineProbs[3], modeldata.laneLines[2], modeldata.roadEdges[1])
+    self.lane_width_left, self.distance_to_road_edge_left, lane_prob_left = calculate_lane_width(
+      modeldata.laneLines[0], modeldata.laneLineProbs[0], modeldata.laneLines[1], modeldata.roadEdges[0]
+    )
+    self.lane_width_right, self.distance_to_road_edge_right, lane_prob_right = calculate_lane_width(
+      modeldata.laneLines[3], modeldata.laneLineProbs[3], modeldata.laneLines[2], modeldata.roadEdges[1]
+    )
     self.lane_exist_left_count.update(lane_prob_left)
     self.lane_exist_right_count.update(lane_prob_right)
     min_lane_width = 2.5

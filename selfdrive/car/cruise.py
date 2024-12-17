@@ -1,7 +1,6 @@
-from calendar import c
 import math
 
-from cereal import car, log
+from cereal import car
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.numpy_fast import clip
 
@@ -243,7 +242,7 @@ class VCruiseCarrot:
     self.update_params()
     self.frame += 1
     if CS.gearShifter != GearShifter.drive:
-      self.autoCruiseControl_cancel_timer = 20 * 100; # 20 sec
+      self.autoCruiseControl_cancel_timer = 20 * 100  # 20 sec
     else:
       self.autoCruiseControl_cancel_timer = max(0, self.autoCruiseControl_cancel_timer - 1)
 
@@ -330,11 +329,13 @@ class VCruiseCarrot:
     button_speed_dn_diff = self._cruise_speed_unit if self._cruise_button_mode in [1, 2, 3] else 1
 
     button_type = 0
-    long_pressed = False
     if self.button_cnt > 0:
       self.button_cnt += 1
     for b in buttonEvents:
-      if b.pressed and self.button_cnt==0 and b.type in [ButtonType.accelCruise, ButtonType.decelCruise, ButtonType.gapAdjustCruise, ButtonType.cancel, ButtonType.lfaButton]:
+      if (b.pressed and self.button_cnt == 0 and
+          b.type in [ButtonType.accelCruise, ButtonType.decelCruise,
+                     ButtonType.gapAdjustCruise, ButtonType.cancel,
+                     ButtonType.lfaButton]):
         self.button_cnt = 1
         self.button_prev = b.type
         if b.type in [ButtonType.accelCruise, ButtonType.decelCruise]:
@@ -473,14 +474,12 @@ class VCruiseCarrot:
         self._lat_enabled = not self._lat_enabled
         self._add_log("Lateral " + "enabled" if self._lat_enabled else "disabled")
         print("lfaButton")
-        pass
       elif button_type == ButtonType.cancel:
         if self._cruise_cancel_state:
           self._lat_enabled = not self._lat_enabled
           self._add_log("Lateral " + "enabled" if self._lat_enabled else "disabled")
         self._cruise_cancel_state = True
         self._v_cruise_kph_at_brake = 0
-        pass
     else:
       if button_type == ButtonType.accelCruise:
         v_cruise_kph = button_kph
@@ -514,7 +513,7 @@ class VCruiseCarrot:
       for speed in range (40, 160, self._cruise_speed_unit):
         if v_cruise_kph < speed:
           v_cruise_kph = speed
-          break;
+          break
     return v_cruise_kph
 
   def _auto_speed_up(self, v_cruise_kph):
@@ -619,7 +618,7 @@ class VCruiseCarrot:
         elif self.d_rel < self.cruiseOnDist:
           self._cruise_control(1, -1, "Cruise on (fcw dist)")
         else:
-          self._add_log("leadCar d={:.1f},v={:.1f},{:.1f}, {:.1f}".format(self.d_rel, self.v_rel, CS.vEgo, safe_dist))
+          self._add_log(f"leadCar d={self.d_rel:.1f},v={self.v_rel:.1f},{CS.vEgo:.1f}, {safe_dist:.1f}")
           #self.events.append(EventName.stopStop)
       if self.desiredSpeed < self.v_ego_kph_set:
         self._cruise_control(1, -1, "Cruise on (desired speed)")
