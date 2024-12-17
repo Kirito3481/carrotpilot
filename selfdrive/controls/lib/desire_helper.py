@@ -176,7 +176,7 @@ class DesireHelper:
     if one_blinker:
       lane_available = self.available_left_lane if leftBlinker else self.available_right_lane
       edge_available = self.available_left_edge if leftBlinker else self.available_right_edge
-      lane_appeared = self.lane_exist_left_count.counter == int(0.2 / DT_MDL) if leftBlinker else self.lane_exist_right_count.counter == int(0.2 / DT_MDL)
+      # lane_appeared = self.lane_exist_left_count.counter == int(0.2 / DT_MDL) if leftBlinker else self.lane_exist_right_count.counter == int(0.2 / DT_MDL)
 
       radar = radarState.leadLeft if leftBlinker else radarState.leadRight
       side_object_dist = radar.dRel + radar.vLead * 4.0 if radar.status else 255
@@ -186,7 +186,7 @@ class DesireHelper:
     else:
       lane_available = True
       edge_available = True
-      lane_appeared = False
+      # lane_appeared = False
       self.object_detected_count = 0
 
     auto_lane_change_blocked = leftBlinker

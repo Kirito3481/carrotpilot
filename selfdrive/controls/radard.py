@@ -192,7 +192,7 @@ def get_lead_side(v_ego, tracks, md, lane_width, model_v_ego):
   leadRight = {'status': False}
 
   ## SCC레이더는 일단 보관하고 리스트에서 삭제...
-  track_scc = tracks.get(0)
+  # track_scc = tracks.get(0)
   #if track_scc is not None:
   #  del tracks[0]
 
@@ -342,7 +342,7 @@ class VisionTrack:
     if self.prob > .5:
       dRel = float(lead_msg.x[0]) - RADAR_TO_CAMERA
       if abs(self.dRel - dRel) > 5.0:
-        cnt = 0
+        self.cnt = 0
       self.dRel = dRel
 
       self.yRel = float(-lead_msg.y[0])
@@ -495,7 +495,7 @@ class RadarD:
     v_ego = self.v_ego
     ready = self.ready
     ## SCC레이더는 일단 보관하고 리스트에서 삭제...
-    track_scc = tracks.get(0)
+    # track_scc = tracks.get(0)
     #if track_scc is not None:
     #  del tracks[0]            ## tracks에서 삭제하면안됨... ㅠㅠ
 

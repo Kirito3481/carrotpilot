@@ -70,8 +70,8 @@ class LongControl:
 
     soft_hold_active = CS.softHoldActive > 0
     a_target = long_plan.aTarget
-    v_target = long_plan.vTarget
-    j_target = long_plan.jTarget
+    # v_target = long_plan.vTarget
+    # j_target = long_plan.jTarget
     should_stop = long_plan.shouldStop
 
     speeds = long_plan.speeds

@@ -123,10 +123,10 @@ def get_preserved_segments(dirs_by_creation: list[str]) -> list[str]:
     # ignore non-segment directories
     if not date_str:
       continue
-    try:
-      seg_num = int(seg_str)
-    except ValueError:
-      continue
+    # try:
+      # seg_num = int(seg_str)
+    # except ValueError:
+    #   continue
     # preserve segment and its prior
     preserved.append(d)
 
@@ -318,11 +318,11 @@ def set_destination(postvars, valid_addr):
     nav_confirmed(postvars)
     valid_addr = True
   else:
-    addr = postvars.get("place_name")
-    token = get_public_token()
-    data, lon, lat, valid_addr, token = search_addr(addr, lon, lat, valid_addr, token)
-    postvars["lat"] = lat
-    postvars["lon"] = lon
+    # addr = postvars.get("place_name")
+    # token = get_public_token()
+    # data, lon, lat, valid_addr, token = search_addr(addr, lon, lat, valid_addr, token)
+    # postvars["lat"] = lat
+    # postvars["lon"] = lon
     postvars["save_type"] = "recent"
     nav_confirmed(postvars)
     valid_addr= True
