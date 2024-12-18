@@ -183,7 +183,7 @@ class CarInterface(CarInterfaceBase):
 
     # *** feature detection ***
     if ret.flags & HyundaiFlags.CANFD:
-      if candidate in (CAR.KIA_CARNIVAL_4TH_GEN, CAR.KIA_SORENTO_4TH_GEN, CAR.KIA_SORENTO_HEV_4TH_GEN) and hda2: ##카니발4th & hda2 인경우에만 BSM이 ADAS에서 나옴.
+      if 0x161 in fingerprint[CAN.ECAN] and hda2: ##카니발4th & hda2 인경우에만 BSM이 ADAS에서 나옴.
         ret.extFlags |= HyundaiExtFlags.BSM_IN_ADAS.value
       print(f"$$$$$ CanFD ECAN = {CAN.ECAN}")
       if 0x1fa in fingerprint[CAN.ECAN]:
@@ -194,7 +194,6 @@ class CarInterface(CarInterfaceBase):
       if 0x3a0 in fingerprint[CAN.ECAN]: # 0x3a0(928): TPMS
         ret.extFlags |= HyundaiExtFlags.CANFD_TPMS.value
         print("$$$CANFD TPMS")
-
     else:
       if 1348 in fingerprint[0]:
         ret.extFlags |= HyundaiExtFlags.NAVI_CLUSTER.value
