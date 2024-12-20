@@ -775,13 +775,18 @@ CValueControl::CValueControl(const QString& params, const QString& title, const 
     hlayout->addWidget(&label);
 
     QString btnStyle = R"(
-    padding: 0;
-    border-radius: 50px;
-    font-size: 35px;
-    font-weight: 500;
-    color: #E4E4E4;
-    background-color: #393939;
-  )";
+      QPushButton {
+        padding: 0;
+        border-radius: 50px;
+        font-size: 35px;
+        font-weight: 500;
+        color: #E4E4E4;
+        background-color: #393939;
+      }
+      QPushButton:pressed {
+        background-color: #4a4a4a;
+      }
+    )";
 
     btnminus.setStyleSheet(btnStyle);
     btnplus.setStyleSheet(btnStyle);
