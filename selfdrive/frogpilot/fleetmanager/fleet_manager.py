@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # otisserv - Copyright (c) 2019-, Rick Lan, dragonpilot community, and a number of other of contributors.
-# Fleet Manager - [actuallylemoncurd](https://github.com/actuallylemoncurd), [AlexandreSato](https://github.com/alexandreSato), [ntegan1](https://github.com/ntegan1), [royjr](https://github.com/royjr), and [sunnyhaibin] (https://github.com/sunnypilot)
+# Fleet Manager - [actuallylemoncurd](https://github.com/actuallylemoncurd), [AlexandreSato](https://github.com/alexandreSato),
+# [ntegan1](https://github.com/ntegan1), [royjr](https://github.com/royjr), and [sunnyhaibin] (https://github.com/sunnypilot)
 # Almost everything else - ChatGPT
 # dirty PR pusher - mike8643
 #
@@ -22,20 +23,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 import os
-import random
 import secrets
-import threading
-import time
 
-from flask import Flask, jsonify, render_template, Response, request, send_from_directory, session, redirect, url_for, abort
-import requests
-from requests.exceptions import ConnectionError
+from flask import Flask, jsonify, render_template, Response, request, send_from_directory, redirect, url_for, abort
 from openpilot.common.realtime import set_core_affinity
 import openpilot.selfdrive.frogpilot.fleetmanager.helpers as fleet
 from openpilot.system.hardware.hw import Paths
 from openpilot.common.swaglog import cloudlog
 import traceback
-from ftplib import FTP, error_perm
+from ftplib import FTP
 
 app = Flask(__name__)
 
@@ -127,7 +123,7 @@ def upload_folder_to_ftp(local_folder, directory, remote_path):
                           print(f"Uploaded: {local_file} -> {filename}")
                   except Exception as e:
                       print(f"Failed to upload {local_file}: {e}")
-  
+
                   pbar.update(1)  # 진행 바 업데이트
 
         ftp.quit()
@@ -141,7 +137,7 @@ def upload_carrot(route, segment):
     from openpilot.common.params import Params
 
     local_folder = Paths.log_root() + f"{route}--{segment}"
-    
+
     # 폴더가 존재하는지 확인
     if not os.path.isdir(local_folder):
         print(f"Folder not found: {local_folder}")
@@ -178,7 +174,7 @@ def route(route):
     return render_template("error.html", error="route not found")
 
   if str(request.query_string) == "b''":
-    query_segment = str("0")
+    query_segment = "0"
     query_type = "qcamera"
   else:
     query_segment = (str(request.query_string).split(","))[0][2:]
@@ -203,7 +199,7 @@ def footage():
     fleet.video_to_img(input_path, output_path)
     gif_path = route_path + "--0/preview.gif"
     gifs.append(gif_path)
-  zipped = zip(route_paths, gifs)
+  zipped = zip(route_paths, gifs, strict=False)
   return render_template("footage.html", zipped=zipped)
 
 @app.route("/preserved/")
@@ -222,7 +218,7 @@ def preserved():
     gif_path = segment + "/preview.gif"
     gifs.append(gif_path)
 
-  zipped = zip(route_paths, gifs, segments)
+  zipped = zip(route_paths, gifs, segments, strict=False)
   return render_template("preserved.html", zipped=zipped)
 
 @app.route("/screenrecords/")
@@ -277,8 +273,8 @@ def addr_input():
   s_token = fleet.get_app_token()
   gmap_key = fleet.get_gmap_key()
   PrimeType = fleet.get_PrimeType()
-  lon = float(0.0)
-  lat = float(0.0)
+  lon = 0.0
+  lat = 0.0
   if request.method == 'POST':
     valid_addr = False
     postvars = request.form.to_dict()
