@@ -83,7 +83,7 @@ def download_dcamera(route, segment):
 
 
 def upload_folder_to_ftp(local_folder, directory, remote_path):
-    from tqdm import tqdm  # tqdmÀ¸·Î ÁøÇà ¹Ù Ç¥½Ã
+    from tqdm import tqdm  # tqdmï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
     ftp_server = "shind0.synology.me"
     ftp_port = 8021
     ftp_username = "carrotpilot"
@@ -105,14 +105,14 @@ def upload_folder_to_ftp(local_folder, directory, remote_path):
           print(f"Directory creation failed: {e}")
         ftp.cwd(remote_path)
 
-        # ·ÎÄÃ Æú´õÀÇ ¸ðµç ÆÄÀÏ °¡Á®¿À±â
+        # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         files = [
             os.path.join(root, filename)
             for root, _, filenames in os.walk(local_folder)
             for filename in filenames
         ]
 
-        # tqdmÀ» »ç¿ëÇÑ ÁøÇà ¹Ù Ç¥½Ã
+        # tqdmï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
         with tqdm(total=len(files), desc="Uploading Files", unit="file") as pbar:
             for local_file in files:
                 filename = os.path.basename(local_file)
@@ -124,7 +124,7 @@ def upload_folder_to_ftp(local_folder, directory, remote_path):
                   except Exception as e:
                       print(f"Failed to upload {local_file}: {e}")
 
-                  pbar.update(1)  # ÁøÇà ¹Ù ¾÷µ¥ÀÌÆ®
+                  pbar.update(1)  # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
         ftp.quit()
         return True
@@ -138,7 +138,7 @@ def upload_carrot(route, segment):
 
     local_folder = Paths.log_root() + f"{route}--{segment}"
 
-    # Æú´õ°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
     if not os.path.isdir(local_folder):
         print(f"Folder not found: {local_folder}")
         return abort(404, "Folder not found")
@@ -151,7 +151,7 @@ def upload_carrot(route, segment):
 
     directory = "routes " + car_selected + " " + Params().get("DongleId").decode('utf-8')
 
-    # FTP·Î Æú´õ¿Í ÆÄÀÏ ¾÷·Îµå ¼öÇà
+    # FTPï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½
     #remote_path = f"{directory}/{route}--{segment}"
     success = upload_folder_to_ftp(local_folder, directory, f"{route}--{segment}")
 
@@ -304,9 +304,13 @@ def addr_input():
       return redirect(url_for('amap_addr_input'))
   elif fleet.get_nav_active():
     if SearchInput == 2:
-      return render_template("nonprime.html", gmap_key=gmap_key, lon=lon, lat=lat, home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
+      return render_template("nonprime.html",
+                             gmap_key=gmap_key, lon=lon, lat=lat,
+                             home=preload[0],work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
     else:
-      return render_template("nonprime.html", gmap_key=None, lon=None, lat=None, home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
+      return render_template("nonprime.html",
+                             gmap_key=None, lon=None, lat=None,
+                             home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
   elif token == "" or token is None:
     return redirect(url_for('public_token_input'))
   elif s_token == "" or s_token is None:
@@ -316,9 +320,13 @@ def addr_input():
     if gmap_key == "" or gmap_key is None:
       return redirect(url_for('gmap_key_input'))
     else:
-      return render_template("addr.html", gmap_key=gmap_key, lon=lon, lat=lat, home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
+      return render_template("addr.html",
+                             gmap_key=gmap_key, lon=lon, lat=lat,
+                             home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
   else:
-      return render_template("addr.html", gmap_key=None, lon=None, lat=None, home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
+      return render_template("addr.html",
+                             gmap_key=None, lon=None, lat=None,
+                             home=preload[0], work=preload[1], fav1=preload[2], fav2=preload[3], fav3=preload[4])
 
 @app.route("/nav_confirmation", methods=['GET', 'POST'])
 def nav_confirmation():

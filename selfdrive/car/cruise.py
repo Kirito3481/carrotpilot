@@ -337,11 +337,21 @@ class VCruiseCarrot:
     button_speed_dn_diff = self._cruise_speed_unit if self._cruise_button_mode in [1, 2, 3] else 1
 
     button_type = 0
-    long_pressed = False
+    self.long_pressed = False
     if self.button_cnt > 0:
       self.button_cnt += 1
     for b in buttonEvents:
-      if b.pressed and self.button_cnt==0 and b.type in [ButtonType.accelCruise, ButtonType.decelCruise, ButtonType.gapAdjustCruise, ButtonType.cancel, ButtonType.lfaButton]:
+      if (
+        b.pressed and
+        self.button_cnt==0 and
+        b.type in [
+          ButtonType.accelCruise,
+          ButtonType.decelCruise,
+          ButtonType.gapAdjustCruise,
+          ButtonType.cancel,
+          ButtonType.lfaButton
+        ]
+      ):
         self.button_cnt = 1
         self.button_prev = b.type
         if b.type in [ButtonType.accelCruise, ButtonType.decelCruise]:
@@ -629,7 +639,7 @@ class VCruiseCarrot:
         elif self.d_rel < self.cruiseOnDist:
           self._cruise_control(1, -1, "Cruise on (fcw dist)")
         else:
-          self._add_log("leadCar d={:.1f},v={:.1f},{:.1f}, {:.1f}".format(self.d_rel, self.v_rel, CS.vEgo, safe_dist))
+          self._add_log(f"leadCar d={self.d_rel:.1f},v={self.v_rel:.1f},{CS.vEgo:.1f}, {safe_dist:.1f}")
           #self.events.append(EventName.stopStop)
       if self.desiredSpeed < self.v_ego_kph_set:
         self._cruise_control(1, -1, "Cruise on (desired speed)")

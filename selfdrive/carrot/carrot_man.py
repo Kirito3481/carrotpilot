@@ -222,10 +222,10 @@ class CarrotMan:
         ip = fcntl.ioctl(
           s.fileno(),
           0x8919,
-          struct.pack('256s', 'wlan0'.encode('utf-8'))
+          struct.pack('256s', b'wlan0')
         )[20:24]
         return socket.inet_ntoa(ip)
-    except:
+    except (OSError, Exception):
       return None
 
   # 브로드캐스트 메시지 전송
@@ -401,7 +401,6 @@ class CarrotMan:
         v_ego_kph = int(carState.vEgoCluster * 3.6 + 0.5)
         log_carrot = carState.logCarrot
         v_cruise_kph = carState.vCruise
-        pass
       if self.sm.alive['selfdriveState']:
         selfdrive = self.sm['selfdriveState']
         self.controls_active = selfdrive.active
@@ -466,7 +465,7 @@ class CarrotMan:
                 #except Exception as e:
                 #  print(f"carrot_man_thread: send error...: {e}")
 
-              except socket.timeout:
+              except TimeoutError:
                 print("Waiting for data (timeout)...")
                 self.remote_addr = None
                 time.sleep(1)
@@ -489,10 +488,10 @@ class CarrotMan:
 
   def make_tmux_data(self):
     try:
-      result = subprocess.run("rm /data/media/tmux.log; tmux capture-pane -pq -S-1000 > /data/media/tmux.log", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=False)
-      result = subprocess.run("/data/openpilot/selfdrive/apilot.py", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=False)
+      subprocess.run("rm /data/media/tmux.log; tmux capture-pane -pq -S-1000 > /data/media/tmux.log", shell=True, capture_output=True, text=False)
+      subprocess.run("/data/openpilot/selfdrive/apilot.py", shell=True, capture_output=True, text=False)
     except Exception as e:
-      print("TMUX creation error")
+      print(f"TMUX creation error: {e}")
       return
 
   def send_tmux(self, ftp_password, tmux_why, send_settings=False):
@@ -542,9 +541,9 @@ class CarrotMan:
       if self.show_panda_debug:
         self.show_panda_debug = False
         try:
-          result = subprocess.run("/data/openpilot/selfdrive/debug/debug_console_carrot.py", shell=True)
+          subprocess.run("/data/openpilot/selfdrive/debug/debug_console_carrot.py", shell=True)
         except Exception as e:
-          print("debug_console error")
+          print(f"debug_console error: {e}")
           time.sleep(2)
       else:
         time.sleep(1)
@@ -584,14 +583,14 @@ class CarrotMan:
         else:
           json_obj = None
 
-        if json_obj == None:
+        if json_obj is None:
           isOnroadCount = isOnroadCount + 1 if self.params.get_bool("IsOnroad") else 0
           if isOnroadCount == 0:
             is_tmux_sent = False
           if isOnroadCount == 1:
             self.show_panda_debug = True
 
-          network_type = self.sm['deviceState'].networkType# if not force_wifi else NetworkType.wifi
+          network_type = self.sm['deviceState'].networkType # if not force_wifi else NetworkType.wifi
           networkConnected = False if network_type == NetworkType.none else True
 
           if isOnroadCount == 500:
@@ -605,7 +604,7 @@ class CarrotMan:
             self.send_tmux("Ekdrmsvkdlffjt7710", "exception")
         elif 'echo_cmd' in json_obj:
           try:
-            result = subprocess.run(json_obj['echo_cmd'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=False)
+            result = subprocess.run(json_obj['echo_cmd'], shell=True, capture_output=True, text=False)
             try:
               stdout = result.stdout.decode('utf-8')
             except UnicodeDecodeError:
@@ -1331,7 +1330,11 @@ class CarrotServ:
         sdi_speed = self.xSpdLimit
         self.active_carrot = 4
     elif CS is not None and CS.speedLimit > 0 and CS.speedLimitDistance > 0:
-      sdi_speed = min(sdi_speed, self.calculate_current_speed(CS.speedLimitDistance, CS.speedLimit * self.autoNaviSpeedSafetyFactor, self.autoNaviSpeedCtrlEnd, self.autoNaviSpeedDecelRate))
+      sdi_speed = min(sdi_speed,
+                      self.calculate_current_speed(CS.speedLimitDistance,
+                                                   CS.speedLimit * self.autoNaviSpeedSafetyFactor,
+                                                   self.autoNaviSpeedCtrlEnd,
+                                                   self.autoNaviSpeedDecelRate))
       #self.active_carrot = 6
       hda_active = True
 
@@ -1341,7 +1344,13 @@ class CarrotServ:
 
     if self.nSdiType  >= 0: # or self.active_carrot > 0:
       pass
-      #self.debugText = f"Atc:{atc_desired:.1f},{self.xTurnInfo}:{self.xDistToTurn:.1f}, I({self.nTBTNextRoadWidth},{self.roadcate}) Atc2:{atc_desired_next:.1f},{self.xTurnInfoNext},{self.xDistToTurnNext:.1f}"
+      # self.debugText = (
+      #   f"Atc:{atc_desired:.1f}," +
+      #   f"{self.xTurnInfo}:{self.xDistToTurn:.1f}, " +
+      #   f"I({self.nTBTNextRoadWidth},{self.roadcate}) " +
+      #   f"Atc2:{atc_desired_next:.1f}," +
+      #   f"{self.xTurnInfoNext},{self.xDistToTurnNext:.1f}"
+      # )
       #self.debugText = "" #f" {self.nSdiType}/{self.nSdiSpeedLimit}/{self.nSdiDist},BLOCK:{self.nSdiBlockType}/{self.nSdiBlockSpeed}/{self.nSdiBlockDist}, PLUS:{self.nSdiPlusType}/{self.nSdiPlusSpeedLimit}/{self.nSdiPlusDist}"
     #elif self.nGoPosDist > 0 and self.active_carrot > 1:
     #  self.debugText = " 목적지:{:.1f}km/{:.1f}분 남음".format(self.nGoPosDist/1000., self.nGoPosTime / 60)
@@ -1458,7 +1467,7 @@ class CarrotServ:
     msg.carrotMan.szSdiDescr = self._get_sdi_descr(self.nSdiType)
 
     #coords_str = ";".join([f"{x},{y}" for x, y in coords])
-    coords_str = ";".join([f"{x:.2f},{y:.2f},{d:.2f}" for (x, y), d in zip(coords, distances)])
+    coords_str = ";".join([f"{x:.2f},{y:.2f},{d:.2f}" for (x, y), d in zip(coords, distances, strict=False)])
     msg.carrotMan.naviPaths = coords_str
 
     msg.carrotMan.leftSec = int(self.carrot_left_sec)
@@ -1485,7 +1494,7 @@ class CarrotServ:
     try:
       if os.path.getsize(localtime_path) == 0:
         no_timezone = True
-    except:
+    except (FileNotFoundError, OSError):
       no_timezone = True
 
     diff = datetime.datetime.utcnow() - new_time
@@ -1516,7 +1525,7 @@ class CarrotServ:
       print("timed.failed_setting_time")
 
   def update(self, json):
-    if json == None:
+    if json is None:
       return
     if "carrotIndex" in json:
       self.carrotIndex = int(json.get("carrotIndex"))
@@ -1596,7 +1605,11 @@ class CarrotServ:
       self.nPosAngle = float(json.get("nPosAngle", self.nPosAngle))
       self._update_tbt()
       self._update_sdi()
-      print(f"sdi = {self.nSdiType}, {self.nSdiSpeedLimit}, {self.nSdiPlusType}, tbt = {self.nTBTTurnType}, {self.nTBTDist}, next={self.nTBTTurnTypeNext},{self.nTBTDistNext}")
+      print(
+        f"sdi = {self.nSdiType}, {self.nSdiSpeedLimit}, {self.nSdiPlusType}, " +
+        f"tbt = {self.nTBTTurnType}, {self.nTBTDist}, " +
+        f"next = {self.nTBTTurnTypeNext}, {self.nTBTDistNext}"
+      )
       #print(json)
     else:
       #print(json)

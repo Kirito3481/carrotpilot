@@ -1,13 +1,13 @@
+from enum import Enum
+
+from cereal import log
 from openpilot.common.params import Params
 from openpilot.common.numpy_fast import clip, interp
 from openpilot.common.realtime import DT_MDL
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.filter_simple import StreamingMovingAverage
-from enum import Enum
-import json
-
 from openpilot.selfdrive.selfdrived.events import Events
-from cereal import car, log
+
 EventName = log.OnroadEvent.EventName
 LaneChangeState = log.LaneChangeState
 
@@ -209,11 +209,28 @@ class CarrotPlanner:
     if v_ego_kph < 1.0:
       stopSign = model_x < 20.0 and model_v < 10.0
     elif v_ego_kph < 82.0:
-      stopSign = model_x < d_rel - 3.0 and model_x < interp(v[0], [60/3.6, 80/3.6], [120.0, 150]) and ((model_v < 3.0) or (model_v < v[0]*0.7))  and abs(y[-1]) < 5.0
+      stopSign = (model_x < d_rel - 3.0 and
+                  model_x < interp(v[0], [60/3.6, 80/3.6], [120.0, 150]) and
+                  ((model_v < 3.0) or (model_v < v[0]*0.7)) and
+                  abs(y[-1]) < 5.0)
     else:
       stopSign = False
 
-    #self.stopSignCount = self.stopSignCount + 1 if (stopSign and (model_x > get_safe_obstacle_distance(v_ego, t_follow=0, comfort_brake=COMFORT_BRAKE, stop_distance=-1.0))) else 0
+    # self.stopSignCount = (
+    #   self.stopSignCount + 1
+    #   if (
+    #     stopSign
+    #     and (
+    #       model_x > get_safe_obstacle_distance(
+    #         v_ego,
+    #         t_follow=0,
+    #         comfort_brake=COMFORT_BRAKE,
+    #         stop_distance=-1.0,
+    #       )
+    #     )
+    #   )
+    #   else 0
+    # )
     self.stopSignCount = self.stopSignCount + 1 if stopSign else 0
     self.startSignCount = self.startSignCount + 1 if startSign and not stopSign else 0
 
@@ -411,7 +428,12 @@ class CarrotPlanner:
     elif self.actual_stop_distance > 0: ## e2eStop, e2eStopped�ΰ��..
       stop_model_x = 0.0
 
-    #self.debugLongText = "XState({}),stop_x={:.1f},stopDist={:.1f},Traffic={}".format(str(self.xState), stop_x, self.actual_stop_distance, str(self.trafficState))
+    # self.debugLongText = (
+    #   f"XState({str(self.xState)})," +
+    #   f"stop_x={stop_x:.1f}," +
+    #   f"stopDist={self.actual_stop_distance:.1f}," +
+    #   f"Traffic={str(self.trafficState)}"
+    # )
     #��ȣ�� �������� self.xState.value
 
     stop_dist =  stop_model_x + self.actual_stop_distance

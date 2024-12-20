@@ -100,7 +100,8 @@ class Controls:
 
     # Check which actuators can be enabled
     standstill = abs(CS.vEgo) <= max(self.CP.minSteerSpeed, MIN_LATERAL_CONTROL_SPEED) or CS.standstill
-    CC.latActive = (self.sm['selfdriveState'].active or lateral_enabled) and CS.latEnabled and not CS.steerFaultTemporary and not CS.steerFaultPermanent and not standstill
+    CC.latActive = ((self.sm['selfdriveState'].active or lateral_enabled) and CS.latEnabled and
+                    not CS.steerFaultTemporary and not CS.steerFaultPermanent and not standstill)
     CC.longActive = CC.enabled and not any(e.overrideLongitudinal for e in self.sm['onroadEvents']) and self.CP.openpilotLongitudinalControl
 
     actuators = CC.actuators
@@ -124,7 +125,8 @@ class Controls:
     # Steering PID loop and lateral MPC
     lat_plan = self.sm['lateralPlan']
     curve_speed_abs = abs(self.sm['carrotMan'].vTurnSpeed)
-    self.lanefull_mode_enabled = lat_plan.useLaneLines and self.params.get_int("UseLaneLineSpeedApply") > 0 and curve_speed_abs > self.params.get_int("UseLaneLineCurveSpeed")
+    self.lanefull_mode_enabled = (lat_plan.useLaneLines and self.params.get_int("UseLaneLineSpeedApply") > 0 and
+                                  curve_speed_abs > self.params.get_int("UseLaneLineCurveSpeed"))
 
     if self.params.get_bool("CarrotLatControl"):
       model_actuator_delay = self.params.get_float("ModelActuatorDelay") * 0.01
