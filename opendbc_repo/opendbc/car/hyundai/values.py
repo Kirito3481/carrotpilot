@@ -161,7 +161,7 @@ class CAR(Platforms):
   HYUNDAI_AZERA_7TH_GEN = HyundaiCanFDPlatformConfig(
     [HyundaiCarDocs("Hyundai Azera 2023-2024", "All", car_parts=CarParts.common([CarHarness.hyundai_a]))],
     CarSpecs(mass=1700, wheelbase=2.895, steerRatio=16.5),
-  )  
+  )
   HYUNDAI_AZERA_6TH_GEN = HyundaiPlatformConfig(
     [HyundaiCarDocs("Hyundai Azera 2022", "All", car_parts=CarParts.common([CarHarness.hyundai_k]))],
     CarSpecs(mass=1600, wheelbase=2.885, steerRatio=14.5),
@@ -354,6 +354,7 @@ class CAR(Platforms):
     [HyundaiCarDocs("Hyundai Ioniq 5 N (with HDA II) 2024", "Highway Driving Assist II", car_parts=CarParts.common([CarHarness.hyundai_m]))],
     CarSpecs(mass=2200, wheelbase=3.00, steerRatio=12.54),
     flags=HyundaiFlags.EV,
+    dbc_dict=field(default_factory=lambda: {Bus.pt: "hyundai_canfd_ccnc"}),  # TODO: 나중에 hyundai_canfd 파일에 합쳐야됨
   )
   HYUNDAI_IONIQ_6 = HyundaiCanFDPlatformConfig(
     [HyundaiCarDocs("Hyundai Ioniq 6 (with HDA II) 2023-24", "Highway Driving Assist II", car_parts=CarParts.common([CarHarness.hyundai_p]))],
